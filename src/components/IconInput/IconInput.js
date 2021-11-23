@@ -8,31 +8,22 @@ import VisuallyHidden from '../VisuallyHidden';
 
 const Wrapper = styled.div`
   position: relative;
-  width: ${p => p.width}px;
-  height: fit-content;
-  border-bottom: solid ${COLORS.black};
-  border-width: ${p => p.size === 'small' ? '1px' : '2px'};
-  padding: 8px;
-
-  &:focus-within {
-    outline: 5px auto -webkit-focus-ring-color;
-    outline: 5px auto Highlight;
-    outline-offset: 5px;
-  } 
-`;
-
-const BaseNativeInput = styled.input`
-  position: absolute;
-  border: none;
   color: ${COLORS.gray700};
-  font-weight: 700;
-
-  &:focus {
-    outline: none;
-  }
 
   &:hover {
     color: ${COLORS.black};
+  }
+`;
+
+const BaseNativeInput = styled.input`
+  border: none;
+  font-weight: 700;
+  border-bottom: solid ${COLORS.black};
+  width: ${props => props.width}px;
+
+  &:focus {
+    /* On Edge, the outline has no offset interestingly */
+    outline-offset: 5px; 
   }
 
   &::placeholder {
@@ -43,16 +34,24 @@ const BaseNativeInput = styled.input`
 
 const SmallInput = styled(BaseNativeInput)`
   font-size: ${14 / 16}rem;
-  top: 4px;
-  left: 30px;
-  width: calc(100% - 38px);
+  height: ${24 / 16}rem;
+  border-width: 1px;
+  padding-left: ${24 / 16}rem;
 `;
 
 const LargeInput = styled(BaseNativeInput)`
   font-size: ${18 / 16}rem;
-  top: 6px;
-  left: 36px;
-  width: calc(100% - 44px);
+  height: ${36 / 16}rem;
+  border-width: 2px;
+  padding-left: ${36 / 16}rem;
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  height: ${props => props.size === 'small' ? 16 / 16 : 24 / 16}rem;
 `;
 
 const IconInput = ({
@@ -61,16 +60,19 @@ const IconInput = ({
   width = 250,
   size,
   placeholder,
+  ...delegated
 }) => {
   const InputComponent = size === 'small' ? SmallInput : LargeInput;
 
   return (
     <Wrapper width={width} size={size}>
-      <Icon id={icon} size={size === 'small' ? 12 : 18} />
-      <InputComponent type="text" placeholder={placeholder} />
       <VisuallyHidden>
         <label htmlFor={InputComponent}>{label}</label>
       </VisuallyHidden>
+      <IconWrapper>
+        <Icon id={icon} size={size === 'small' ? 16 : 24} />
+      </IconWrapper>
+      <InputComponent type="text" placeholder={placeholder} {...delegated} />
     </Wrapper>
   );
 };
